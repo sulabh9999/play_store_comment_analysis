@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+	<!-- <link href="{{ url_for('static', filename='css/StyleSheet.css')}}" rel="stylesheet" type="text/css"> -->
+		<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+	<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/local.css') }}">
+
+	<!-- jQuery library -->
+	<script src="{{ url_for('static', filename='js/jquery-3.4.1.min.js')}}"></script>
+
+	<!-- custom js file -->
+	<script src="{{ url_for('static', filename='js/base.js')}}"></script>
+	<script src="{{ url_for('static', filename='js/pieChart.js')}}"></script>
+	<script src="{{ url_for('static', filename='js/barChart.js')}}"></script>
+
+	<!-- Popper JS -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+
+	<!-- Latest compiled JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+	
+</head>
+<body>
+
+<div class="container">
+	<h4>NLP Demo</h4><br>
+	<form  class="form-inline"  id="myform" >
+			<label for="end">Start date: &nbsp</label></br>
+			<input class="form-control mb-2 mr-sm-2" name="dg-startDate" type="date" value="2018-01-01" min="2018-01-01" max="2019-12-31">
+			<label for="end">End date: &nbsp</label>
+			<input class="form-control mb-2 mr-sm-2" name="dg-endDate" type="date" value="2019-05-01" min="2018-01-01" max="2020-12-31">
+			<label>Country: &nbsp</label>
+			<select name="dg-contry" class="form-control mb-2 mr-sm-2 &nbsp">
+			    <option value="dgIndia">India</option>
+			    <option value="dgIndo">Indonatia</option>
+			    <option value="dgTaivan">Taivan</option>
+			    <option value="dgHongKong">Hong-Kong</option>
+			</select>
+			<label>Platform: &nbsp</label>
+			<select name="dg-platform" class="form-control mb-2 mr-sm-2 &nbsp">
+				<option value="android">Android</option>
+				<option value="ios">iOS</option>
+				<option value="web">Web</option>
+			</select>
+		<input type="submit" value="Submit" class="btn-primary form-control mb-2 mr-sm-2" id="submitBtn">
+	</form>
+</div>
+
+<center>
+	<div class="spinner-border aligncenter" role="status"  style="display:none;" id="waitngView">
+    	<span class="sr-only">Loading...</span>
+	</div>	
+</center>
+	
+
+
+<div id="piechart-container" class="container chart-container" style="display:flex;"></div>
+<div id="barchart-container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+
+<!-- <script type="text/javascript">
+	var loadPieChart = "{{ loadPieChart }}";
+	if (loadPieChart) {
+		// pieChart()
+	}
+</script> -->
+
+</body>
+</html>
