@@ -1,19 +1,15 @@
-$(".drill_cursor").click(function(){
-//do something
-});
-
 // show log
 function showLog(msg, arg) {
     console.log(msg, arg)
 }
 
 function showWaiting(isEnable) {
-	var wating = document.getElementById("waitngView");
-	if (wating != null) {
-		// console.log("wating.style.display:", wating.style.display);
-		wating.style.display = isEnable ? "block" : "none";
-		// console.log("wating.style.display now:", wating.style.display);
-	} 
+    var wating = document.getElementById("waitngView");
+    if (wating != null) {
+        // console.log("wating.style.display:", wating.style.display);
+        wating.style.display = isEnable ? "block" : "none";
+        // console.log("wating.style.display now:", wating.style.display);
+    } 
 }
 
 
@@ -55,13 +51,13 @@ function jsonToDict(response) {
 
 
 function drawLineChart(dataSet) {
+
     var data = google.visualization.arrayToDataTable(dataSet);
     var options = {
         title: "report",
         hAxis: {
-            // title: "Years", 
-            // direction:-1, 
-            // slantedText:true, 
+            direction:-1,
+            // slantedText:true,
             slantedTextAngle:90
         },
         chart: {
@@ -69,10 +65,12 @@ function drawLineChart(dataSet) {
           subtitle: 'with respect to time'
         },
         // legend: {position: 'none'}
-        legend: { position: 'top', alignment: 'end' }
+        legend: { position: 'top', alignment: 'end' },
     };
 
-    var chart = new google.charts.Line(document.getElementById('lineChart'));
+    
+    var chart = new google.visualization.LineChart(document.getElementById("lineChart"));
+    // google.visualization.events.addListener(chart, 'select', selectHandler);
     chart.draw(data, options);
     // showWaiting(false);
 }
@@ -99,14 +97,39 @@ function lineChartInit() {
 
 
 function showLineChart() {
- 	showWaiting(true);
-    google.charts.load('current', { packages: ['corechart', 'line']});
- 	// google.charts.load('current', {'packages':['line']});
- 	   	// google.charts.load('current',{'packages':['corechart']});
+    showWaiting(true);
+    // google.charts.load('current', {'packages':['line']});
+        google.charts.load('current',{'packages':['corechart']});
     google.charts.setOnLoadCallback(lineChartInit);
     console.log("showing line chart "); 
     // google.load("visualization", "1", {packages:["corechart"]});
     // google.setOnLoadCallback(lineChartInit);
+
+    // function drawChartModeldaily() {
+    //     var data = google.visualization.arrayToDataTable(
+    //         [
+    //             ['daily', 'Views', 'Likes'],
+    //             ['Tue',  4, 19],
+    //             ['Mon',  22, 16],
+    //             ['Sat',  3, 1],
+    //             ['Fri',  15, 34],
+    //             ['Thu',  27, 44],
+    //             ['Wed',  17, 23],
+    //         ]
+    //     );
+
+        // var options = {
+        //   title: "Test",
+        //    hAxis: {
+        //         direction:-1,
+        //         slantedText:true,
+        //         slantedTextAngle:90
+        //     }
+        // };
+
+    //     var chart = new google.visualization.LineChart(document.getElementById("lineChart"));
+    //     chart.draw(data, options);
+    // }
 }
 
 

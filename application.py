@@ -66,7 +66,6 @@ def lineChart():
 		queryResult = db.getLineChart('banking', '2019-01-01', '2019-04-01', 'india', 'ios')
 		# dgStartDate, dgEndDate, dgContry, dgPlatform = getFormInput(request)
 		# queryResult = db.getChartData(dgStartDate, dgEndDate, dgContry, dgPlatform, top=5, isNegative=False)
-		print('queryResult: queryResult:', queryResult)
 		return jsonify(queryResult)
 
 

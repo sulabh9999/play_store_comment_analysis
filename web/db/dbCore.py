@@ -8,6 +8,9 @@ from config import Config
 from random import uniform
 import threading
 import datetime
+import decimal
+
+
 
 class DBCore(object):
     
@@ -69,11 +72,13 @@ class DBCore(object):
             self.__connection.rollback()
     
 
-
+#-------------------------------new----------------------------
 
     def __setDateFormat(self, o):
         if isinstance(o, (datetime.date, datetime.datetime)):
             return o.isoformat()
+        if isinstance(o, decimal.Decimal):
+            return int(o)
 
 
     # updated        
@@ -87,18 +92,18 @@ class DBCore(object):
             result = self.__curs.fetchall()
             self.__connection.commit()
             self.lock.release() # unlock
-
+            # print('real sql response: ', result)
             json_data=[]
             for each in result:
-                json_data.append(dict(zip(row_headers,each)))
+                json_data.append(dict(zip(row_headers, each)))
 
-            return json.dumps(json_data, sort_keys=True, indent=1, default=self.__setDateFormat)
+            return json.dumps(json_data, sort_keys=True, indent=2, default=self.__setDateFormat)
         except pymysql.Error as err:
             print('query is: ', query)
             print("..Exception message:", err.args)
             print('--- failed --')
             self.__connection.rollback()
-          
+#----------------------------------------------------------------------
     
     def addEsapesequence(self, comment): 
         return re.sub("(['\"])", r"\\\1", comment) #re.sub("([#$%^&_{}'\"])", r"\\\1", comment)

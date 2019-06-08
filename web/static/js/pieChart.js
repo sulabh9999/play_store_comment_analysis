@@ -7,6 +7,34 @@ String.prototype.trunc =
         : subString) + "&hellip;";
 };
 
+// $('[class=pieChartUnit]').click(function(e){
+// 	e.stopPropagation();
+//     var class_name = $(this).attr('id');
+//     alert(class_name);
+// });
+
+// $('#piechart-container').children().on('click', function (event) {
+//   if (event.target != this) {
+//     alert('You clicked a descendent of #container.');
+//   } else {
+//     alert('You actually clicked #container itself.');
+//   }
+// });
+
+// document.getElementsByClassName('container')[0]
+//     .addEventListener('click', function (event) {
+//        console.log("tapped");
+// });
+// document.getElementsByClassName('pieC')[0].addEventListener('click',function(){
+// 	console.log("tapped");
+// },false)
+
+// var el = document.getElementsByClassName('pieC');
+// if(el){
+//   	el.addEventListener('click', function(event) {
+//   		console.log("tapped");
+//   	}, false);
+// }
 
 
 // set title for google pie chart
@@ -87,6 +115,26 @@ function drawPieChart(topic, data, divId) {
 
 	// Display the chart inside the <div> element with id="piechart"
 	var chart = new google.visualization.PieChart(document.getElementById(divId));
+    
+    function redirect(){
+    	var base_url = window.location.origin;
+		var url = base_url + "/lineChart";
+		window.open(url, '_top');
+		// var params = { width:1680, height:1050 };
+		// var str = jQuery.param( params );
+	}
+
+    function selectHandler() {
+    	// console.log('select handler called');
+	    var selectedItem = chart.getSelection()[0];
+	    if (selectedItem) {
+	    	var topping = data.getValue(selectedItem.row, 0);
+	    	// redirect();
+	    	// console.log('row is:', selectedItem.row);
+	    	// console.log('The user selected ', chart.getSelection());
+	  	}
+    }
+    google.visualization.events.addListener(chart, 'select', selectHandler);
 	chart.draw(data, options);
 }
 
@@ -105,9 +153,10 @@ function pieChartInit() {
             	var topic = response[i][0];
             	var data = response[i][1];
 
-            	var divId = "chart-" + topic;
+            	var divId = i; //"chart-" + topic;
 	            var div = document.createElement('div');
 	            div.id = divId
+	            div.className = "pieChartUnit"
 	            div.innerHTML = "<div></div>";
 	            document.getElementById('piechart-container').appendChild(div);
 	            // pieChart.js -> drawChart()
@@ -132,8 +181,8 @@ function showPieChart() {
 
 
 
-
-//---------------------------- fack chart methods --------------------
+//---------------------------------------------------------------------
+//---------------------------- dummy chart methods --------------------
 
 function showDummyPieChart() {
 	google.charts.load('current', {'packages':['corechart']});

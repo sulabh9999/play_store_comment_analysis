@@ -42,6 +42,10 @@ class DBWebQuery(DBCore):
     def __setDefaultQuery(self, start, end ,isNegative=True, columnName='rating'):
         return """date BETWEEN '%s' AND '%s' AND %s""" % (start, end, self.__setIsNegative(isNegative, columnName))
     
+    # returns "2018-12-30 AND 2019-01-21 AND rating > 3"
+    def __setDateQuery(self, start, end, dateColName='date'):
+        return """%s BETWEEN '%s' AND '%s' """ % (dateColName, start, end)
+    
 
 
 
@@ -125,22 +129,28 @@ class DBWebQuery(DBCore):
     def __executeJson(self, query):
         showQuery(query)
         jsonResult = self.executeWithHeader(query) 
-        print('show query output:', jsonResult)
         return jsonResult
 
 
     def __getFreqForReason(self, reason, countTag, dateQuery, country, platform):
         # select `date` as weekOf, SUM(reason) from dbs_master_2 where `date` between '2018-01-01' and '2019-03-01' AND reason='banking' group by week(`date`)
-        # group by week
-        # select `date` as weekOf, COUNT(`reason`) as freq from dbs_master_2 where `date` between '2019-01-01' and '2019-03-01' AND reason='banking' group by week(`date`)
         # by month/year
         # ... group by month/year(`date`)
+        #--------------------------- new ---------------
+        # select date as date, SUM(case when rating >= 3 then 1 else 0 end) as pCount, SUM(case when rating <3 then 1 else 0 end) as nCount from dbs_master_2 where date between '2019-01-01' and '2019-03-01' and `reason`='banking' group by week(date) 
         table=SConstants.table.master
         reasonColumn = 'reason'
         dateColumn = 'date'
-        # SELECT `reason`, COUNT(`reason`) AS `value_occurrence` FROM `dbs_master_2` WHERE `topic`= "app" rating < 3 GROUP BY reason ORDER BY `value_occurrence` DESC LIMIT 5      
-        parm = (dateColumn, reasonColumn, countTag, table, dateQuery, reason, dateColumn)
-        query = """select %s, COUNT(%s) as %s from %s where %s AND reason='%s' group by week(%s)"""
+        ratingColum = 'rating'
+        """
+            select date as dd, 
+                SUM(case when rating >= 3 then 1 else 0 end) as pCount, 
+                SUM(case when rating <3 then 1 else 0 end) as nCount 
+             from dbs_master_2 
+             where date BETWEEN '2019-01-01' AND '2019-04-01' and rating='nice' group by week(date)
+        """
+        parm = (dateColumn, ratingColum, ratingColum, table, dateQuery, reasonColumn, reason, dateColumn)
+        query = """select %s as date, SUM(case when %s >= 3 then 1 else 0 end) as pCount, SUM(case when %s <3 then 1 else 0 end) as nCount from %s where %s and %s='%s' group by week(%s)"""
         print('query is:', query % parm)
         return self.__executeJson(query % parm)
 
@@ -148,36 +158,11 @@ class DBWebQuery(DBCore):
 
     def getLineChart(self, reason, start, end, country, platform):
         # fetch negative graph data
-        dateQuery = self.__setDefaultQuery(start, end, isNegative=False)
-        pgJsonData = self.__getFreqForReason(reason, 'pCount', dateQuery, country, platform)
-        pgData = pgJsonData #json.load(pgJsonData)
-
-        # fetch positive graph data
-        dateQuery = self.__setDefaultQuery(start, end, isNegative=True)
-        ngJsonData = self.__getFreqForReason(reason, 'nCount', dateQuery, country, platform)
-        ngData = ngJsonData #json.load(ngJsonData)
-
-        # merge both into one list
-        bigList = ngData if len(ngData) > len(pgData) else pgData
-        smallList = ngData if len(ngData) < len(pgData) else pgData
-
-        def setDefault(each):
-            print(each)
-            return each
-
-
-        finalResult = []
-        # bigList = map(setDefault, bigList)
-
-        # maxLen = max(ngData, pgData) # since lenth of both array is same, so took anyone
-        # for i in range(maxLen):
-        #     # if 
-        #     print('postive:', pgData[i])
-        #     print('negative:', ngData[i])
-        #     # merged = set(negativeGraphData[i], positiveGraphData[i])
-        #     # finalResult.append(merged)
-
-        return bigList
+        dateQuery = self.__setDateQuery(start, end)
+        resultJson = self.__getFreqForReason(reason, 'pCount', dateQuery, country, platform)
+        
+        print('resultJson: ', resultJson)
+        return resultJson
         
         
 
