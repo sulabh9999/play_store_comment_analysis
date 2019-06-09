@@ -13,11 +13,15 @@ function display(txt="This is an alert!") {
 // 	}
 // });
 
+function fun(id) {
+	console.log("taken id:", id);
+}
 
-$('div.pieC').bind('click', $.proxy(function(event) {	
-    var status = $(event.currentTarget).attr('id');
-    alert(status);
-}, this));
+// $('div.pieC').bind('click', $.proxy(function(event) {	
+//     var status = $(event.currentTarget).attr('id');
+//     // alert(this);
+//     console.log(event);
+// }, this));
 
 // $('[class=pieChartUnit]').click(function(e){
 // 	e.stopPropagation();
@@ -47,7 +51,7 @@ $(function() {
         console.log("shwoing please wait...");
         // showDummyPieChart();
         showPieChart();
-        // showBarChart();
+        showBarChart();
 		e.preventDefault();
 	});
 });

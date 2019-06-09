@@ -1,3 +1,7 @@
+// global var to store parameters
+var parameters = {};
+var pieChartResponse;
+
 String.prototype.trunc =
  function( n, useWordBoundary=true ){
      if (this.length <= n) { return this; }
@@ -7,41 +11,38 @@ String.prototype.trunc =
         : subString) + "&hellip;";
 };
 
-// $('[class=pieChartUnit]').click(function(e){
-// 	e.stopPropagation();
-//     var class_name = $(this).attr('id');
-//     alert(class_name);
-// });
+// ------------------------ pie chart response ---------------
+function storePieChartResponse(response) {
+	pieChartResponse = response;
+}
 
-// $('#piechart-container').children().on('click', function (event) {
-//   if (event.target != this) {
-//     alert('You clicked a descendent of #container.');
-//   } else {
-//     alert('You actually clicked #container itself.');
-//   }
-// });
+function getResponseForIndex(index) {
+	return pieChartResponse[index]
+}
 
-// document.getElementsByClassName('container')[0]
-//     .addEventListener('click', function (event) {
-//        console.log("tapped");
-// });
-// document.getElementsByClassName('pieC')[0].addEventListener('click',function(){
-// 	console.log("tapped");
-// },false)
+// ---------------------------- store serilized paramters for lineChart----------------
+function storeReqParm(param) {
+	parameters = {};
+	$.each($('form').serializeArray(), function() {
+	    parameters[this.name] = this.value;
+	});
+}
 
-// var el = document.getElementsByClassName('pieC');
-// if(el){
-//   	el.addEventListener('click', function(event) {
-//   		console.log("tapped");
-//   	}, false);
-// }
+function updateReqParm(key, value) {
+	parameters[key] = value;
+	console.log("request paramter after update:", parameters)
+}
 
+function getParm(isForNeg=true) {
+	return jQuery.param( parameters);
+}
+
+//------------------------------------------------------------------------
 
 // set title for google pie chart
 function setTitleForPieChart(title, count) {
 	return title + '('+ count + ')' ;
 }
-
 
 // set tooltip
 function setTooltipForPieChart(reason, count, comment, link) {
@@ -49,11 +50,9 @@ function setTooltipForPieChart(reason, count, comment, link) {
        comment + '<br> <a href="https://www.w3schools.com/html/">show more</a>' + '</div>';
 }
 
-
 function isExist(data) {
 	return !(data == undefined || data == "" || data.length == 0);
 }
-
 
 function pieChartOption(topic, count) {
 	return {
@@ -118,21 +117,19 @@ function drawPieChart(topic, data, divId) {
     
     function redirect(){
     	var base_url = window.location.origin;
-		var url = base_url + "/lineChart";
+		var url = base_url + "/lineChart?" +  getParm();
+		console.log("GET call for line chart page:", url);
 		window.open(url, '_top');
-		// var params = { width:1680, height:1050 };
-		// var str = jQuery.param( params );
 	}
 
     function selectHandler() {
-    	// console.log('select handler called');
-	    var selectedItem = chart.getSelection()[0];
-	    if (selectedItem) {
-	    	var topping = data.getValue(selectedItem.row, 0);
-	    	// redirect();
-	    	// console.log('row is:', selectedItem.row);
-	    	// console.log('The user selected ', chart.getSelection());
-	  	}
+    	var selection = chart.getSelection();
+	    if (selection.length) {
+	        var pieSliceLabel = data.getValue(selection[0].row, 0);
+	        console.log("ouutput:", (pieSliceLabel));
+	        updateReqParm("sliceTitle", pieSliceLabel);
+	        redirect();
+	    }
     }
     google.visualization.events.addListener(chart, 'select', selectHandler);
 	chart.draw(data, options);
@@ -146,7 +143,9 @@ function pieChartInit() {
         data: $('form').serialize(),
         type: 'POST',
         success: function(response) {
-            console.log(response);
+            // console.log(response);
+            storeReqParm($('form').serializeArray());
+            storePieChartResponse(response);
             setSubmitButton(true);
     
             $.each(response, function(i) {
@@ -157,10 +156,17 @@ function pieChartInit() {
 	            var div = document.createElement('div');
 	            div.id = divId
 	            div.className = "pieChartUnit"
-	            div.innerHTML = "<div></div>";
+	            div.innerHTML = `<div></div>`;
 	            document.getElementById('piechart-container').appendChild(div);
 	            // pieChart.js -> drawChart()
 				drawPieChart(topic, data, divId);
+				$('.pieChartUnit').unbind().click(function(e){
+					// e.stopPropagation();
+					var index = e.currentTarget.id;
+			        console.log(index);
+			        // console.log("response for index:", getResponseForIndex(index));
+			        updateReqParm("pieChartTitle", getResponseForIndex(index)[0]);
+		        });
 			});
         },
         error: function(error) {

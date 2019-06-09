@@ -132,7 +132,7 @@ class DBWebQuery(DBCore):
         return jsonResult
 
 
-    def __getFreqForReason(self, reason, countTag, dateQuery, country, platform):
+    def __getFreqForReason(self, reason, countTag, dateQuery, country, platform, chunkSize):
         # select `date` as weekOf, SUM(reason) from dbs_master_2 where `date` between '2018-01-01' and '2019-03-01' AND reason='banking' group by week(`date`)
         # by month/year
         # ... group by month/year(`date`)
@@ -150,16 +150,23 @@ class DBWebQuery(DBCore):
              where date BETWEEN '2019-01-01' AND '2019-04-01' and rating='nice' group by week(date)
         """
         parm = (dateColumn, ratingColum, ratingColum, table, dateQuery, reasonColumn, reason, dateColumn)
-        query = """select %s as date, SUM(case when %s >= 3 then 1 else 0 end) as pCount, SUM(case when %s <3 then 1 else 0 end) as nCount from %s where %s and %s='%s' group by week(%s)"""
+        query = ''
+        if chunkSize == 'week':
+            query = """select %s as date, SUM(case when %s >= 3 then 1 else 0 end) as pCount, SUM(case when %s <3 then 1 else 0 end) as nCount from %s where %s and %s='%s' group by week(%s)"""
+        if chunkSize == 'month':
+            query = """select %s as date, SUM(case when %s >= 3 then 1 else 0 end) as pCount, SUM(case when %s <3 then 1 else 0 end) as nCount from %s where %s and %s='%s' group by month(%s)"""
+        if chunkSize == 'year':
+            query = """select %s as date, SUM(case when %s >= 3 then 1 else 0 end) as pCount, SUM(case when %s <3 then 1 else 0 end) as nCount from %s where %s and %s='%s' group by year(%s)"""
+        
         print('query is:', query % parm)
         return self.__executeJson(query % parm)
 
 
 
-    def getLineChart(self, reason, start, end, country, platform):
+    def getLineChart(self, reason, start, end, country, platform, chunkSize):
         # fetch negative graph data
         dateQuery = self.__setDateQuery(start, end)
-        resultJson = self.__getFreqForReason(reason, 'pCount', dateQuery, country, platform)
+        resultJson = self.__getFreqForReason(reason, 'pCount', dateQuery, country, platform, chunkSize)
         
         print('resultJson: ', resultJson)
         return resultJson
