@@ -168,7 +168,7 @@ class DBWebQuery(DBCore):
         dateQuery = self.__setDateQuery(start, end)
         resultJson = self.__getFreqForReason(reason, 'pCount', dateQuery, country, platform, chunkSize)
         
-        print('resultJson: ', resultJson)
+        # print('resultJson: ', resultJson)
         return resultJson
         
         

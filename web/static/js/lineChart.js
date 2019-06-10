@@ -73,13 +73,13 @@ function yearPressed() {
 
 //-------------------------------------------------------------------------------
 
-function reverseArr(input) {
-    var ret = new Array;
-    for(var i = input.length-1; i >= 0; i--) {
-        ret.push(input[i]);
-    }
-    return ret;
-}
+// function reverseArr(input) {
+//     var ret = new Array;
+//     for(var i = input.length-1; i >= 0; i--) {
+//         ret.push(input[i]);
+//     }
+//     return ret;
+// }
 
 function jsonToDict(response) {
     function dateFormat(dateStr) {
@@ -108,7 +108,7 @@ function jsonToDict(response) {
         return array;
     }
     var arrayList = new Array();
-    // arrayList.push(['daily', 'Positive', 'Negative']);
+    arrayList.push(['daily', 'Positive', 'Negative']);
     var obj = $.parseJSON(response);            
     $.each(obj, function(index){
         arrayList.push(toList(obj[index]));
@@ -116,9 +116,9 @@ function jsonToDict(response) {
     console.log('befre rev:', arrayList);
     // console.log('after rev:', 
 
-    var array = reverseArr(arrayList);
-    array.splice( 0, 0, ['daily', 'Positive', 'Negative']);
-    return array;
+    // var array = reverseArr(arrayList);
+    // array.splice( 0, 0, ['daily', 'Positive', 'Negative']);
+    return arrayList;
 }
 
 
