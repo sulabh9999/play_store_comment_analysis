@@ -52,6 +52,8 @@ $(function() {
         // showDummyPieChart();
         showPieChart();
         showBarChart();
+        showCircleChart();
+        // showDummyBarChart();
 		e.preventDefault();
 	});
 });

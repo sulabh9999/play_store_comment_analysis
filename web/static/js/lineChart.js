@@ -108,7 +108,7 @@ function jsonToDict(response) {
         return array;
     }
     var arrayList = new Array();
-    arrayList.push(['daily', 'Positive', 'Negative']);
+    arrayList.push(['Time', 'Positive', 'Negative']);
     var obj = $.parseJSON(response);            
     $.each(obj, function(index){
         arrayList.push(toList(obj[index]));

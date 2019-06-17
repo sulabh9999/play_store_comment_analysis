@@ -65,7 +65,7 @@ function pieChartOption(topic, count) {
 	    },
 		'backgroundColor':'lightGray',
 	  	'width':200, 'height':250,
-		'is3D': true,
+		// 'is3D': true,
 		'pieSliceText': 'label',
 		'legend': 'none',
 		'tooltip': {

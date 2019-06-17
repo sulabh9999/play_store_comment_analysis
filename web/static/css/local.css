@@ -111,3 +111,58 @@ body {font-family: Arial, Helvetica, sans-serif;}
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+/*--------------------------*/
+#horizontal-container {
+  min-height: 300px;
+  width: 90%;
+  display: flex;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+#leftDiv {
+  width: 75%;
+  /*background-color: blue;*/
+}
+#middleDiv {
+  width: 25%;
+  /*background-color: green;*/
+}
+#rightDiv {
+  width: 25%;
+  background-color: yellow;
+}
+
+/*--------- donat chart---------*/
+.donutCell {
+    position: relative;
+    top: 40px;
+}
+
+/*.donutDiv {
+    width: 256px;
+    height: 256px;
+}*/
+.circle-center-div {
+    position: absolute;
+    left: 80px;
+    top: 90px;
+    width: 50px;
+    line-height: 15px;
+    /*text-align: center;*/
+    color: maroon;
+    /*background-color: yellow;*/
+}
+
+.circle-title {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    height: 10px;
+}
+
+.circle-subtitle {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 10px;
+     height: 5px;
+}

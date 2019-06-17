@@ -52,7 +52,7 @@ class DBWebQuery(DBCore):
 
     # get Top n frequen element from table
     def __getHotTopics(self, start, end, column, total, table=SConstants.table.master, isNegative=True):      
-        #SELECT `topic`, COUNT(`topic`) AS `value_occurrence` FROM `dbs_master_2` WHERE rating < 3 GROUP BY topic ORDER BY `value_occurrence` DESC LIMIT 5
+        #SELECT `topic`, COUNT(`topic`) AS `value_occurrence` FROM `dbs_master_2` WHERE rating < 3 AND date BETWEEN '2019-03-01' AND '2019-03-12' GROUP BY topic ORDER BY `value_occurrence` DESC LIMIT 5 
         parm = (column, column, table, self.__setDefaultQuery(start, end, isNegative), column, total)
         # q= """SELECT * FROM """+ table
         query = """SELECT %s, COUNT(%s) AS `value_occurrence` FROM %s WHERE %s GROUP BY %s ORDER BY `value_occurrence` DESC LIMIT %d"""
@@ -143,20 +143,21 @@ class DBWebQuery(DBCore):
         dateColumn = 'date'
         ratingColum = 'rating'
         """
-            select date as dd, 
-                SUM(case when rating >= 3 then 1 else 0 end) as pCount, 
-                SUM(case when rating <3 then 1 else 0 end) as nCount 
-             from dbs_master_2 
-             where date BETWEEN '2019-01-01' AND '2019-04-01' and rating='nice' group by week(date)
-        """
+        select date as date, 
+        SUM(case when rating > 3 then 1 else 0 end) as pCount, 
+        SUM(case when rating <3 then 1 else 0 end) as nCount 
+        from dbs_master_2 
+        where date BETWEEN '2018-01-01' AND '2019-05-01' 
+        and reason='service' 
+        group by week(date)"""
         parm = (dateColumn, ratingColum, ratingColum, table, dateQuery, reasonColumn, reason, dateColumn)
         query = ''
         if chunkSize == 'week':
-            query = """select %s as date, SUM(case when %s >= 3 then 1 else 0 end) as pCount, SUM(case when %s <3 then 1 else 0 end) as nCount from %s where %s and %s='%s' group by week(%s)"""
+            query = """select %s as date, SUM(case when %s > 3 then 1 else 0 end) as pCount, SUM(case when %s <3 then 1 else 0 end) as nCount from %s where %s and %s='%s' group by week(%s) """
         if chunkSize == 'month':
-            query = """select %s as date, SUM(case when %s >= 3 then 1 else 0 end) as pCount, SUM(case when %s <3 then 1 else 0 end) as nCount from %s where %s and %s='%s' group by month(%s)"""
+            query = """select %s as date, SUM(case when %s > 3 then 1 else 0 end) as pCount, SUM(case when %s <3 then 1 else 0 end) as nCount from %s where %s and %s='%s' group by month(%s) """
         if chunkSize == 'year':
-            query = """select %s as date, SUM(case when %s >= 3 then 1 else 0 end) as pCount, SUM(case when %s <3 then 1 else 0 end) as nCount from %s where %s and %s='%s' group by year(%s)"""
+            query = """select %s as date, SUM(case when %s > 3 then 1 else 0 end) as pCount, SUM(case when %s <3 then 1 else 0 end) as nCount from %s where %s and %s='%s' group by year(%s) """
         
         print('query is:', query % parm)
         return self.__executeJson(query % parm)
@@ -167,9 +168,23 @@ class DBWebQuery(DBCore):
         # fetch negative graph data
         dateQuery = self.__setDateQuery(start, end)
         resultJson = self.__getFreqForReason(reason, 'pCount', dateQuery, country, platform, chunkSize)
-        
         # print('resultJson: ', resultJson)
         return resultJson
         
-        
 
+
+        
+########################## circle chart #################################
+      
+    def getCircleChart(self, start, end, country, platform):
+        # fetch negative graph data
+        dateQuery = self.__setDateQuery(start, end)
+        parm = (SConstants.table.master, dateQuery)
+
+        query = """SELECT 
+                    COUNT(comment_id) as total, 
+                    SUM(CASE WHEN rating>3 THEN 1 ELSE 0 END) as positive, 
+                    SUM(CASE WHEN rating<3 THEN 1 ELSE 0 END) as negative 
+                FROM %s WHERE %s """ % parm
+        print('query is :::', query)
+        return json.loads(self.__executeJson(query))[0]

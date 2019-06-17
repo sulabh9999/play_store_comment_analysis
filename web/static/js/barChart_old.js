@@ -10,20 +10,9 @@ function setTooltipForBarChart(reason, count, comment, link) {
 function barChartOption() {
 	return  {
         title: 'DigiBank India Android +ve reviews',
-        // isStacked: 'percent',
-        // bar: { groupWidth: '75%' },
-        chartArea: {
-            width: '86%',
-            top: 50,
-            backgroundColor: {
-            stroke: '#D3D3D3',
-            strokeWidth: 1
-        }
-        },
+        isStacked: true,
         legend: 'none',
-        height: 300,
-        // width: 1000,
-        width: '100%',
+        height: 400,
         'tooltip': {
 			'textStyle':{
 				'bold': true,
@@ -32,25 +21,8 @@ function barChartOption() {
 			},
 			'showColorCode': true,
 			'isHtml': true,
-			'ignoreBounds': false
-		},
-        hAxis: {
-          title: 'Top list',
-          minValue: 0
-        },
-        vAxis: {
-          title: 'Number of comments'
-        },
-        annotations: {
-             textStyle: {
-                 color: 'black',
-                 fontSize: 11,
-             },
-             // alwaysOutside: false
-        },
-        animation: {
-            easing: 'out'
-        }
+			'ignoreBounds': true
+		}
 	}; 
 }
 
@@ -73,7 +45,8 @@ function setColumn(columnData, numOfCellsInColumn) {
 	var titleFreq = columnData[1][0];
 	var detailsArray = columnData[1][1];
 
-	var column = [];	
+	var column = [];
+	
 	var colors = ['#00B050', '#92D050', '#AAE182', '#D7F0B4', '#D2DBC6', '#D2DBC6', '#D2DBC6', '#D2DBC6']
     
     var columnList = [title];
@@ -123,7 +96,7 @@ function drawBarChart(data) {
     var barChartArray = setAllColumns(data);
     console.log('barChartColumnHeader: ', barChartArray);
     var data = google.visualization.arrayToDataTable(barChartArray);
-    var chart = new google.visualization.ColumnChart(document.getElementById('barchart-container'));
+    var chart = new google.visualization.BarChart(document.getElementById('barchart-container'));
     chart.draw(data, barChartOption());
 }
 

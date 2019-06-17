@@ -17,9 +17,10 @@
              <!-- Latest compiled JavaScript -->
       <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
    </head>
+
    <body>
       <div class="container">
-         <h4>NLP Demo</h4>
+         <!-- <h4>App Report</h4> -->
          <br>
          <form  class="form-inline"  id="myform" >
             <label for="end">Start date: &nbsp</label></br>
@@ -29,8 +30,8 @@
             <label>Product: &nbsp</label>
             <select name="dg-contry" class="form-control mb-2 mr-sm-2 &nbsp">
                <option value="dgIndia">DGIndia</option>
-               <option value="dgIndo">DGIndonatia</option>
-               <option value="dgTaivan">DGTaivan</option>
+               <option value="dgIndo">DGIndonesia</option>
+               <option value="dgTaiwan">DGTaiwan</option>
                <option value="dgHongKong">DGHongKong</option>
             </select>
             <label>Platform: &nbsp</label>
@@ -42,19 +43,40 @@
             <input type="submit" value="Submit" class="btn-primary form-control mb-2 mr-sm-2" id="submitBtn">
          </form>
       </div>
+      <br>
       <center>
          <div class="spinner-border aligncenter" role="status"  style="display:none;" id="waitngView">
             <span class="sr-only">Loading...</span>
          </div>
       </center>
      
+      <div style= "margin-left: 100px;">
+         <h5 style="font-size:14px;"><b>DigiBank India Android -ve reviews</b></h5>
+         <div id="piechart-container" class="chart-container pieC" style="display:flex;"></div>
+      </div>
+      
+      <br>
 
-      <div id="piechart-container" class="container chart-container pieC" style="display:flex;"></div>
-      <div id="barchart-container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+      <div id="horizontal-container">
+         <div id="leftDiv">
+            <div id="barchart-container"></div>   
+         </div>
+         <div id="middleDiv" >
+            <div class="donutCell">
+               <div id="circlechart-container"></div>
+               <div class="circle-center-div">
+                  <h1 class="circle-title" id="circleTitle"></h1>
+                  <h1 class="circle-subtitle" id="circleSubtitle"></h1>
+               </div>
+            </div>
+            
+         </div>
+      </div>
       
       <script src="{{ url_for('static', filename='js/base.js')}}"></script>
       <script src="{{ url_for('static', filename='js/pieChart.js')}}"></script>
       <script src="{{ url_for('static', filename='js/barChart.js')}}"></script>
+      <script src="{{ url_for('static', filename='js/circleChart.js')}}"></script>
       
    </body>
 </html>

@@ -80,9 +80,25 @@ def lineChart():
 		dgStartDate, dgEndDate, dgContry, dgPlatform = getFormInput(req)
 		pieChartTitle, sliceTitle, chunkSize = getPieParmInput(req)
 		queryResult = db.getLineChart(sliceTitle, dgStartDate, dgEndDate, dgContry, dgPlatform, chunkSize=chunkSize)
-		# dgStartDate, dgEndDate, dgContry, dgPlatform = getFormInput(request)
-		# queryResult = db.getChartData(dgStartDate, dgEndDate, dgContry, dgPlatform, top=5, isNegative=False)
 		return jsonify(queryResult)
+
+
+
+
+# need to implement
+@application.route('/circleChart', methods=['GET','POST'])
+def circleChart():
+	print (request)
+	if request.method == 'GET':
+		print('... this is GET method:')
+	if request.method == 'POST':
+		print('... this is POST method:')
+		req = request.form.to_dict()
+		dgStartDate, dgEndDate, dgContry, dgPlatform = getFormInput(req)
+		# pieChartTitle, sliceTitle, chunkSize = getPieParmInput(req)
+		queryResult = db.getCircleChart(dgStartDate, dgEndDate, dgContry, dgPlatform)
+		return jsonify(queryResult)
+
 
 
 
