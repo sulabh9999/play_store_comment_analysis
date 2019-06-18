@@ -150,14 +150,14 @@ class DBWebQuery(DBCore):
         where date BETWEEN '2018-01-01' AND '2019-05-01' 
         and reason='service' 
         group by week(date)"""
-        parm = (dateColumn, ratingColum, ratingColum, table, dateQuery, reasonColumn, reason, dateColumn)
+        parm = (dateColumn, ratingColum, ratingColum, table, dateQuery, reasonColumn, reason, dateColumn, dateColumn)
         query = ''
         if chunkSize == 'week':
-            query = """select %s as date, SUM(case when %s > 3 then 1 else 0 end) as pCount, SUM(case when %s <3 then 1 else 0 end) as nCount from %s where %s and %s='%s' group by week(%s) """
+            query = """select %s as date, SUM(case when %s > 3 then 1 else 0 end) as pCount, SUM(case when %s <3 then 1 else 0 end) as nCount from %s where %s and %s='%s' group by week(%s) order by %s"""
         if chunkSize == 'month':
-            query = """select %s as date, SUM(case when %s > 3 then 1 else 0 end) as pCount, SUM(case when %s <3 then 1 else 0 end) as nCount from %s where %s and %s='%s' group by month(%s) """
+            query = """select %s as date, SUM(case when %s > 3 then 1 else 0 end) as pCount, SUM(case when %s <3 then 1 else 0 end) as nCount from %s where %s and %s='%s' group by month(%s) order by %s"""
         if chunkSize == 'year':
-            query = """select %s as date, SUM(case when %s > 3 then 1 else 0 end) as pCount, SUM(case when %s <3 then 1 else 0 end) as nCount from %s where %s and %s='%s' group by year(%s) """
+            query = """select %s as date, SUM(case when %s > 3 then 1 else 0 end) as pCount, SUM(case when %s <3 then 1 else 0 end) as nCount from %s where %s and %s='%s' group by year(%s) order by %s"""
         
         print('query is:', query % parm)
         return self.__executeJson(query % parm)
@@ -184,7 +184,8 @@ class DBWebQuery(DBCore):
         query = """SELECT 
                     COUNT(comment_id) as total, 
                     SUM(CASE WHEN rating>3 THEN 1 ELSE 0 END) as positive, 
-                    SUM(CASE WHEN rating<3 THEN 1 ELSE 0 END) as negative 
+                    SUM(CASE WHEN rating<3 THEN 1 ELSE 0 END) as negative,
+                    SUM(CASE WHEN rating=3 THEN 1 ELSE 0 END) as 'natural'  
                 FROM %s WHERE %s """ % parm
         print('query is :::', query)
         return json.loads(self.__executeJson(query))[0]

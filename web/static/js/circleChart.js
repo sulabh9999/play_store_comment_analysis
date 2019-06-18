@@ -7,6 +7,10 @@ function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
+function addCountIntoTitle(title, count) {
+    return title + '(' + numberWithCommas(count) + ')';
+}
+
 function drawCircleChart(response) {
      // console.log('circleChart ....: ', response['total']);
     var total = numberWithCommas(response['total'])
@@ -14,17 +18,28 @@ function drawCircleChart(response) {
     updateTotalCommentInCircleChart(total);
     var pos = response['positive'];
     var neg = response['negative'];
+    var natural = response['natural'];
     var data = google.visualization.arrayToDataTable([
         ['Task', 'Hours per Day'],
-        ['positive',     pos],
-        ['neative',      neg]
+        [addCountIntoTitle('positive', pos),     pos],
+        [addCountIntoTitle('neative', neg),      neg],
+        [addCountIntoTitle('natural', natural),  natural]
     ]);
 
     var options = {
         title: 'Total Activity',
         // legend: 'none',
+        // titlePosition: 'none',
         pieHole: 0.8,
+        // width: '100%',
+        // height: '100%',
         showLables: 'true',
+        // backgroundColor: 'red',
+        chartArea: {
+          // left: 10,
+          height: '60%',
+          width: '100%'
+        },
     };
 
     var chart = new google.visualization.PieChart(document.getElementById('circlechart-container'));
